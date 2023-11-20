@@ -1,77 +1,49 @@
-import React, { useState } from "react";
-import "./App.css";
+import React, { useEffect, useState } from "react";
 
-function App() {
-  const boxSize = 50;
-  const containerSize = 300;
+const App = () => {
+  const [userData, setUserData] = useState(null);
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://randomuser.me/api/?page=1&results=1&seed=dev"
+        );
+        const data = await response.json();
+        setUserData(data.results[0]);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
 
-  const handleMove = (direction) => {
-    let newX = position.x;
-    let newY = position.y;
-
-    switch (direction) {
-      case "up":
-        newY = Math.max(0, position.y - 20);
-        break;
-      case "down":
-        newY = Math.min(containerSize - boxSize, position.y + 20);
-        break;
-      case "left":
-        newX = Math.max(0, position.x - 20);
-        break;
-      case "right":
-        newX = Math.min(containerSize - boxSize, position.x + 20);
-        break;
-      default:
-        break;
-    }
-
-    setPosition({ x: newX, y: newY });
-  };
+    fetchData();
+  }, []);
 
   return (
-    <div className="App">
-      <div className="horizontal-button">
-        <button onClick={() => handleMove("up")}>Up</button>
-      </div>
-      <div className="middle-part">
-        <div className="vertical-button">
-          <button onClick={() => handleMove("left")}>Left</button>
-        </div>
-        <div
-          style={{
-            marginTop: "1rem",
-            marginBottom: "1rem",
-            marginLeft: "1rem",
-            marginRight: "1rem",
-            position: "relative",
-            width: containerSize + "px",
-            height: containerSize + "px",
-            border: "1px solid black",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: "yellow",
-              width: boxSize + "px",
-              height: boxSize + "px",
-              top: position.y + "px",
-              left: position.x + "px",
-            }}
-          ></div>
-        </div>
-        <div className="vertical-button">
-          <button onClick={() => handleMove("right")}>Right</button>
-        </div>
-      </div>
-      <div className="horizontal-button">
-        <button onClick={() => handleMove("down")}>Down</button>
+    <div className="container flex h-[100vh] justify-center">
+      <div className="bg-[#f7f7f7] flex h-[30vh] w-[60vh] m-auto items-center justify-evenly border">
+        {userData && (
+          <>
+            <div className="image h-[70%] w-[30%]">
+              <img
+                src={userData.picture.large}
+                alt={`${userData.name.first} ${userData.name.last}`}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="info">
+              <div className="name flex gap-2 text-[23px] font-bold">
+                <h1>{userData.name.first}</h1>
+                <h1>{userData.name.last}</h1>
+              </div>
+              <p>Gender: {userData.gender}</p>
+              <p>Phone: {userData.phone}</p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default App;
