@@ -1,31 +1,14 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import Login from "./Components/Login";
-import Home from "./Home";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./Components/Home";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/home"
-          element={
-            localStorage.getItem("userDetails") ? (
-              <Home />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route index element={<Navigate to="/home" />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;
